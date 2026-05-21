@@ -1,0 +1,147 @@
+index
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Ma Publication</title>
+    <!-- Tailwind CSS pour un design moderne et responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icônes -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#1a202c',
+                        darkPanel: '#2d3748',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Styles personnalisés pour le comportement fluide */
+        html { scroll-behavior: smooth; }
+        .page-container {
+            transition: transform 0.3s ease-out;
+            transform-origin: top center;
+        }
+        /* Cache la barre de défilement pour un look plus propre (optionnel) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-darkBg text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Barre de navigation / Outils (Fixée en haut) -->
+    <header class="fixed top-0 w-full bg-white/90 dark:bg-darkPanel/90 backdrop-blur-md shadow-sm z-50 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex justify-between items-center">
+            <h1 class="font-bold text-lg md:text-xl truncate pr-4">Mon Super Texte</h1>
+            
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- Contrôles de Zoom (Surtout utiles sur PC, sur mobile on peut pincer l'écran) -->
+                <button onclick="zoomOut()" class="w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition" title="Réduire">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span id="zoom-level" class="text-sm font-medium w-12 text-center">100%</span>
+                <button onclick="zoomIn()" class="w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition" title="Agrandir">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                
+                <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+                
+                <!-- Bouton Mode Sombre/Clair -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition" title="Changer de thème">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteneur principal de lecture -->
+    <main class="flex-grow pt-24 pb-12 px-4 flex justify-center">
+        <!-- Zone des images (Pages) -->
+        <div id="reader-container" class="page-container w-full max-w-3xl flex flex-col items-center space-y-6 md:space-y-10">
+            
+            <!-- INSTRUCTIONS: Remplacez les liens 'src' ci-dessous par les noms de vos images -->
+            <!-- Exemple: src="page1.jpg" si l'image est dans le même dossier -->
+            
+            <img src="https://images.unsplash.com/photo-1594819047050-99defca82545?q=80&w=1000&auto=format&fit=crop" 
+                 alt="Page 1" 
+                 class="w-full bg-white dark:bg-gray-800 shadow-xl rounded-sm object-cover" 
+                 loading="lazy">
+                 
+            <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=1000&auto=format&fit=crop" 
+                 alt="Page 2" 
+                 class="w-full bg-white dark:bg-gray-800 shadow-xl rounded-sm object-cover" 
+                 loading="lazy">
+                 
+            <!-- Ajoutez d'autres images ici en copiant-collant le bloc ci-dessus -->
+
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="bg-white dark:bg-darkPanel py-6 text-center shadow-inner transition-colors duration-300">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Fin du texte. Merci pour votre lecture !</p>
+    </footer>
+
+    <!-- Script pour la logique (Zoom et Thème) -->
+    <script>
+        // Gestion du Zoom
+        let currentZoom = 1;
+        const container = document.getElementById('reader-container');
+        const zoomLevelText = document.getElementById('zoom-level');
+
+        function updateZoomDisplay() {
+            container.style.transform = `scale(${currentZoom})`;
+            zoomLevelText.textContent = `${Math.round(currentZoom * 100)}%`;
+            
+            // Ajustement de la marge supérieure pour compenser l'agrandissement
+            if (currentZoom > 1) {
+                container.style.marginTop = `${(currentZoom - 1) * 20}%`;
+            } else {
+                container.style.marginTop = "0";
+            }
+        }
+
+        function zoomIn() {
+            if (currentZoom < 2.5) { // Zoom maximum 250%
+                currentZoom += 0.25;
+                updateZoomDisplay();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > 0.5) { // Zoom minimum 50%
+                currentZoom -= 0.25;
+                updateZoomDisplay();
+            }
+        }
+
+        // Gestion du Mode Sombre
+        function toggleTheme() {
+            const htmlTag = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (htmlTag.classList.contains('dark')) {
+                htmlTag.classList.remove('dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                htmlTag.classList.add('dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+
+        // Sur mobile, les utilisateurs utilisent le pincement des doigts pour zoomer naturellement.
+        // La balise meta viewport 'user-scalable=yes' le permet.
+    </script>
+</body>
+</html>
